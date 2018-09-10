@@ -7,7 +7,7 @@ from helper import *
 
 
 
-tsleep  = 5
+tsleep  = 0
 
 def BasicMessageHook(session,text,_threading=0):
 	if _threading == 0:
@@ -42,7 +42,9 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 			"failReply"	: 0,
 			"replyHook" : None
 		}
+		dreplies = {"failReply":""}
 
+		dreplies.update(replies)
 		doptions.update(options)
 
 		# Messaging loop
@@ -75,14 +77,14 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 							try:
 								if doptions["keysearch"] == 0:
 
-									reply = replies[msg["last_message"]]
+									reply = dreplies[msg["last_message"]]
 
 									if "function" in str(type(reply)):
 										reply = reply(msg["last_message"])
 
 								else:
-
-									reply = replies[FindInDict(msg["last_message"],replies,1)]
+									
+									reply = dreplies[FindInDict(msg["last_message"],dreplies,1)]
 
 									if "function" in str(type(reply)):
 										reply = reply(msg["last_message"])
@@ -95,7 +97,7 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 								Failed to find a reply , send the fail message
 								"""
 								FailedToReply = 1
-								reply = replies["failReply"]
+								reply = dreplies["failReply"]
 
 
 							if FailedToReply:
