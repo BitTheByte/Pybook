@@ -8,7 +8,7 @@ def FindInDict(tkey,dict_,rand=0):
 			return key
 
 	for key in dict_:
-		if tkey in key:
+		if key in tkey:
 			matches.append(key)
 	if rand != 0:
 		return matches[random.randint(0,len(matches)-1)]
