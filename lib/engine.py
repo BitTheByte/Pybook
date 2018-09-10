@@ -77,12 +77,20 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 
 									reply = replies[msg["last_message"]]
 
+									if "function" in str(type(reply)):
+										reply = reply(msg["last_message"])
+
 								else:
 
 									reply = replies[FindInDict(msg["last_message"],replies,1)]
 
-							except:
+									if "function" in str(type(reply)):
+										reply = reply(msg["last_message"])
 
+
+
+
+							except:
 								"""
 								Failed to find a reply , send the fail message
 								"""
