@@ -10,6 +10,10 @@ from lib.engine  import *
 
 fbsession = login("myemail@somewhere.com","Secret_Password123") # login with facebook
 
+
+def hi(msg):
+	print msg
+	return "HELLO FROM FUNCTION"
 """
 def custom(message):
 	print message
@@ -18,7 +22,8 @@ def custom(message):
 
 myreplies = {
 	"hi":"Hello from python!",
-	"failReply":"Sorry i don't understand :("
+	"failReply":"Sorry i don't understand :(",
+	"func_hello":hi
 }
 
 options = {
