@@ -116,17 +116,18 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 
 
 
-
 def send(session,fb_dtsg,text,to):
+    if text != "":
+        logger("Replying to [{}]".format(to))
 
-    logger("Replying to [{}]".format(to))
-
-    data = {
-      'fb_dtsg': urllib.unquote(str(fb_dtsg)).decode('utf8'),
-      'body': text,
-      'send': 'Send',
-      'cver': 'legacy',
-      'tids': urllib.unquote(to).decode('utf8'),
-    }
+        data = {
+            'fb_dtsg': urllib.unquote(str(fb_dtsg)).decode('utf8'),
+            'body': text,
+            'send': 'Send',
+            'cver': 'legacy',
+            'tids': urllib.unquote(to).decode('utf8'),
+        }
     
-    session.post('https://mbasic.facebook.com/messages/send/', data=data)
+        session.post('https://mbasic.facebook.com/messages/send/', data=data)
+
+
