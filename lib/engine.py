@@ -1,6 +1,7 @@
 import urllib
 import threading
 import time
+import types
 from parser import *
 from helper import *
 
@@ -49,64 +50,35 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 
 		# Messaging loop
 		while (1):
-
 			"""
 			Have some sleep :D
 			"""
 			time.sleep(tsleep)
 
 			for msg in ParseMessages(session["session"]):
-
 				FailedToReply = 0
-
 				if msg != None:
-
 					if msg["status"] == "unread":
-
-						"""
-						if hook is not none override the reply
-						"""
-						
 						if doptions["replyHook"] != None:
-
 							reply = doptions["replyHook"](msg["last_message"])
 							send(session["session"],session["fb_dtsg"],reply,msg["url"])
-
 						else:
-
 							try:
 								if doptions["keysearch"] == 0:
-
 									reply = dreplies[msg["last_message"]]
-
-									if "function" in str(type(reply)):
+									if types.FunctionType == type(reply):
 										reply = reply(msg["last_message"])
-
 								else:
-									
 									reply = dreplies[FindInDict(msg["last_message"],dreplies,1)]
-
-									if "function" in str(type(reply)):
+									if types.FunctionType == type(reply):
 										reply = reply(msg["last_message"])
-
-
-
-
 							except:
-								"""
-								Failed to find a reply , send the fail message
-								"""
 								FailedToReply = 1
 								reply = dreplies["failReply"]
-
-
 							if FailedToReply:
-
 								if doptions["failReply"]:
-
 									send(session["session"],session["fb_dtsg"],reply,msg["url"])
 							else:
-
 								send(session["session"],session["fb_dtsg"],reply,msg["url"])
 								
 
