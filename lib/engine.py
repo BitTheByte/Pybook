@@ -45,11 +45,11 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 		}
 		dreplies = {"failReply":""}
 
-		dreplies.update(replies)
-		doptions.update(options)
+		dreplies |= replies
+		doptions |= options
 
 		# Messaging loop
-		while (1):
+		while 1:
 			"""
 			Have some sleep :D
 			"""
@@ -59,27 +59,23 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 				FailedToReply = 0
 				if msg != None:
 					if msg["status"] == "unread":
-						if doptions["replyHook"] != None:
-							reply = doptions["replyHook"](msg["last_message"])
-							send(session["session"],session["fb_dtsg"],reply,msg["url"])
-						else:
+						if doptions["replyHook"] is None:
 							try:
-								if doptions["keysearch"] == 0:
-									reply = dreplies[msg["last_message"]]
-									if types.FunctionType == type(reply):
-										reply = reply(msg["last_message"])
-								else:
-									reply = dreplies[FindInDict(msg["last_message"],dreplies,1)]
-									if types.FunctionType == type(reply):
-										reply = reply(msg["last_message"])
+								reply = (
+									dreplies[msg["last_message"]]
+									if doptions["keysearch"] == 0
+									else dreplies[FindInDict(msg["last_message"], dreplies, 1)]
+								)
+								if types.FunctionType == type(reply):
+									reply = reply(msg["last_message"])
 							except:
 								FailedToReply = 1
 								reply = dreplies["failReply"]
-							if FailedToReply:
-								if doptions["failReply"]:
-									send(session["session"],session["fb_dtsg"],reply,msg["url"])
-							else:
+							if FailedToReply and doptions["failReply"] or not FailedToReply:
 								send(session["session"],session["fb_dtsg"],reply,msg["url"])
+						else:
+							reply = doptions["replyHook"](msg["last_message"])
+							send(session["session"],session["fb_dtsg"],reply,msg["url"])
 								
 
 						
@@ -89,17 +85,17 @@ def StaticMessageHook(session,options,replies={},_threading=0):
 
 
 def send(session,fb_dtsg,text,to):
-    if text != "":
-        logger("Replying to [{}]".format(to))
+	if text != "":
+		logger(f"Replying to [{to}]")
 
-        data = {
-            'fb_dtsg': urllib.unquote(str(fb_dtsg)).decode('utf8'),
-            'body': text,
-            'send': 'Send',
-            'cver': 'legacy',
-            'tids': urllib.unquote(to).decode('utf8'),
-        }
-    
-        session.post('https://mbasic.facebook.com/messages/send/', data=data)
+		data = {
+		    'fb_dtsg': urllib.unquote(str(fb_dtsg)).decode('utf8'),
+		    'body': text,
+		    'send': 'Send',
+		    'cver': 'legacy',
+		    'tids': urllib.unquote(to).decode('utf8'),
+		}
+
+		session.post('https://mbasic.facebook.com/messages/send/', data=data)
 
 
