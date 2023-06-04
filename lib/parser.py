@@ -13,10 +13,10 @@ def FindLastMessages(html):
         emoji_fiter2 = re.search('(.*?)<i class="[a-z][a-z] [a-z][a-z]" style="background-image:url\(https://static.xx.fbcdn.net/images/emoji.php/.*?\)"',message)
 
         if emoji_fiter != None:
-            messages.append(emoji_fiter.group(1))
+            messages.append(emoji_fiter[1])
         elif emoji_fiter2 != None:
 
-            messages.append(emoji_fiter2.group(1))
+            messages.append(emoji_fiter2[1])
         else:
             messages.append(message)
 
@@ -28,7 +28,10 @@ def ParseMessages(session,url="https://mbasic.facebook.com/messages/",unread_col
     html_page =  session.get(url).content
     css_style =  re.findall('<style type="text/css">(.*?)</style>',html_page)[0].strip()
     try:
-        unread_message_class  = re.search('.([a-zA-Z][a-zA-Z]){background-color:%s;}' % unread_color ,css_style).group(1)
+        unread_message_class = re.search(
+            '.([a-zA-Z][a-zA-Z]){background-color:%s;}' % unread_color,
+            css_style,
+        )[1]
     except:
         unread_message_class  = "junk"
 
@@ -36,8 +39,8 @@ def ParseMessages(session,url="https://mbasic.facebook.com/messages/",unread_col
     messageUrls = re.findall('<a href="/messages/read/\?tid=(.*?)&amp;refid=11#fua">',html_page)
     tables  = re.findall('<table class="(.*?)">',html_page)
     last_messages = FindLastMessages(html_page)
- 
-    for x in range(99):
+
+    for _ in range(99):
         last_messages.append("Dev-x-padding")
 
     index = 0
